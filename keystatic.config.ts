@@ -2,7 +2,11 @@ import { config, fields, collection } from '@keystatic/core';
 
 export default config({
   storage: {
-    kind: 'local',
+    kind: 'github',
+    repo: {
+      owner: 'GMen0n',
+      name: 'car-match-india',
+    },
   },
   collections: {
     cars: collection({
