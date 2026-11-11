@@ -1,14 +1,12 @@
-## Commands
+# Development instructions
+
+Run application tooling inside Docker containers.
 
 | Command | Purpose |
 |---------|---------|
-| `npm run dev` | Start dev server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build locally |
+| docker compose up --build -d --wait frontend db | Start local development |
+| docker compose run --rm frontend npm run build | Verify frontend build |
+| docker compose run --build --rm catalogue-worker | Verify database access |
+| docker compose config --quiet | Validate Compose configuration |
 
-## Reference
-
-- Astro docs: https://docs.astro.build
-- Keystatic docs: https://keystatic.com/docs/installation-astro
-- Tailwind v4 docs: https://tailwindcss.com/docs
-- Bharat NCAP: https://bncap.in
+Commit package-lock.json and uv.lock with dependency changes. Keep secrets and generated artifacts out of version control. The worker currently checks database connectivity. Catalogue importing and agent integration are upcoming work.

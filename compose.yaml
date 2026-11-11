@@ -1,0 +1,44 @@
+services:
+  frontend:
+    build:
+      context: .
+      target: development
+    ports:
+      - "127.0.0.1:4321:4321"
+    volumes:
+      - .:/app
+      - frontend_node_modules:/app/node_modules
+      - frontend_astro:/app/.astro
+
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: carmatch
+      POSTGRES_PASSWORD: carmatch_local_dev
+      POSTGRES_DB: carmatch
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carmatch -d carmatch"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  catalogue-worker:
+    build:
+      context: .
+      dockerfile: services/catalogue_worker/Dockerfile
+      target: development
+    profiles: ["jobs"]
+    environment:
+      DATABASE_URL: postgresql://carmatch:carmatch_local_dev@db:5432/carmatch
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+volumes:
+  frontend_node_modules:
+  frontend_astro:
+  postgres_data:
